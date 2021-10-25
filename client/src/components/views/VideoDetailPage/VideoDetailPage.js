@@ -11,6 +11,7 @@ function VideoDetailPage(props) {
 
   const videoId = props.match.params.videoId
   const variable = { videoId: videoId }
+  const [Comments, setComments] = useState([])
 
   useEffect(() => {
 
@@ -22,7 +23,16 @@ function VideoDetailPage(props) {
           } else {
             alert('비디오 정보를 가져오는데 실패했습니다. ')
           }
-        })  
+        })
+        Axios.post('/api/comment/getComments', variable)  
+            .then(res => {
+              if(res.data.success) {
+                setComments(res.data.comments)
+                console.log(res.data.comments);
+              } else {
+                alert('코멘트 정보를 가져오는데 실패하였습니다. ')
+              }
+            })
   }, [])
   if(VideoDetail.writer) {
     const subscriptionButton = VideoDetail.writer._id !== localStorage.getItem('userId') && <Subscribe userTo={VideoDetail.writer._id}/>
@@ -43,7 +53,7 @@ function VideoDetailPage(props) {
             </List.Item>
   
             {/* {comment} */}
-            <Comment/>
+            <Comment postId={videoId} commentLists={Comments}/>
           </div>
         </Col>
         <Col lg={6} xs={24}>

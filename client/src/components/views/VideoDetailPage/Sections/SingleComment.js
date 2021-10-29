@@ -11,29 +11,31 @@ function SingleComment(props) {
   const onClickReplyOpen = () => {
     setOpenReply(!OpenReply)
   }
-  const actions = () => [
+  const actions = [
     <span onClick={onClickReplyOpen} key="comment-basic-reply-to">Reply to</span>
   ]
   const handleChange = (event) => {
     setCommentValue(event.currentTarget.value)
   }
   const onSubmit= (event) => {
-    // event.preventDefault();
-    // const variables = {
-    //   content: CommentValue,
-    //   writer: user.userData._id,
-    //   postId: props.postId,
-    //   reponseTo: props.postId
-    // }
+    event.preventDefault();
+    const variables = {
+      content: CommentValue,
+      writer: user.userData._id,
+      postId: props.postId,
+      reponseTo: props.comment._id
+    }
     
-    // Axios.post('/api/comment/saveComment', variables)
-    //   .then(res => {
-    //     if(res.data.success) {
-    //       console.log(res.data.result);
-    //     } else {
-    //       alert('커멘트를 저장하지 못했습니다. ')
-    //     }
-    //   })
+    Axios.post('/api/comment/saveComment', variables)
+      .then(res => {
+        if(res.data.success) {
+          console.log(res.data.result);
+          props.refreshFunction(res.data.result)
+          setCommentValue("")
+        } else {
+          alert('커멘트를 저장하지 못했습니다. ')
+        }
+      })
     
   }
   return (
